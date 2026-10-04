@@ -643,7 +643,6 @@ function pageHome(){
       fld("내 링크 (한 줄에 하나씩)",eta("site/main","links",SITE.links,"https://x.com/...",2,{merge:true}))+'</div>';
   }
   const act=need("home:active",()=>db.collection("works").where("status","in",[0,1,2]).limit(500));
-  const td=need("home:today",()=>db.collection("works").where("reqDate","==",today()).limit(200));
   const dn=need("home:done",()=>db.collection("works").orderBy("doneDate","desc").limit(40));
   const n=(s,cap)=>s.loading?"–":(s.docs.length>=cap?cap+"+":s.docs.length);
   const done=dn.docs.filter(w=>(+w.status||0)===3&&w.doneDate).slice(0,12);
@@ -657,9 +656,7 @@ function pageHome(){
    '<aside class="hstat"><h2 class="cute-h">'+HEART+'Status</h2><table class="sched"><tbody>'+
      '<tr><td>CHAR</td><td><a href="#chars"><b>'+CHARS.length+'</b>명의 캐릭터</a></td></tr>'+
      '<tr><td>PAIR</td><td><a href="#pairs"><b>'+PAIRS.length+'</b>쌍의 페어</a></td></tr>'+
-     '<tr><td>TODAY</td><td><a href="#works" data-act="qf" data-mo="1">오늘 신청 <b>'+n(td,200)+'</b>건</a></td></tr>'+
-     '<tr><td>NOW</td><td><a href="#works" data-act="qf" data-st="active">진행 중 <b>'+n(act,500)+'</b>건</a></td></tr>'+
-     '<tr><td>NEW</td><td>최근 완성 <b>'+(dn.loading?"–":done.length)+'</b>점</td></tr></tbody></table>'+
+     '</tbody></table>'+
      (done[0]&&done[0].thumb?'<a class="hphoto" href="#work-'+done[0].id+'"><img src="'+esc(done[0].thumb)+'" alt="최근 완성작"></a>':firstImg?'<a class="hphoto" href="#char-'+firstImg.id+'"><img src="'+esc(firstImg.img)+'" alt=""></a>':'<div class="hphoto"></div>')+'</aside></div>';
   if(canWrite&&coreLoaded.chars&&!CHARS.length)h+='<div class="note center" style="margin-top:22px"><b>처음이에요?</b> 순서대로 따라 하면 금방 시작할 수 있어요. <a href="#guide">사용법 보기 →</a></div>';
   h+=secTitle("NEW ARRIVALS","최근 완성작")+(dn.loading?'<div class="loading">불러오는 중…</div>':done.length?'<div class="grid">'+done.map(workCard).join("")+'</div>':'<div class="empty">완성된 작업이 아직 없어요.</div>');
