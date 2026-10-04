@@ -264,7 +264,7 @@ body.busy,body.busy *{cursor:var(--cur-b,progress) 0 0,progress!important}
 .facts dt{font-family:var(--f-serif);font-weight:700;color:var(--cherry);white-space:nowrap}
 .facts dd{overflow-wrap:anywhere}
 .facts dt:nth-last-of-type(1),.facts dd:last-of-type{border-bottom:0}
-.cnote{display:grid;grid-template-columns:84px minmax(0,1fr);gap:16px;align-items:start;padding:16px;border-radius:20px;background:linear-gradient(135deg,rgba(227,238,251,.75),rgba(232,236,250,.6));margin-bottom:12px}
+.cnote{display:grid;grid-template-columns:84px minmax(0,1fr);gap:16px;align-items:start;padding:16px;border-radius:20px;background:linear-gradient(135deg,rgba(255,227,237,.7),rgba(255,240,246,.7));margin-bottom:12px}
 .cnote .frame{width:84px}
 .cnote .frame .ini{font-size:30px}
 .cnote b{font-family:var(--f-serif);color:var(--cherry);font-size:17px}
@@ -569,9 +569,12 @@ function errToast(e){const c=e&&e.code||"";console.warn(e);
 /* ---------- lookups ---------- */
 const charById=id=>CHARS.find(c=>c.id===id)||null;
 const pairById=id=>PAIRS.find(p=>p.id===id)||null;
-function pairName(p){if(!p)return "";if((p.name||"").trim())return p.name;return [charById(p.a),charById(p.b)].map(c=>c?c.name:"?").join(" × ")}
+function slotChar(p,k){const c=p[k]?charById(p[k]):null;if(c)return c;return {id:"",custom:true,name:(p[k+"Name"]||"").trim()||"?",img:p[k+"Img"]||"",color:"#F49AC1",owner:p[k+"Owner"]||"",look:p[k+"Look"]||""}}
+const customSlots=p=>["a","b"].map(k=>slotChar(p,k)).filter(c=>c.custom&&c.name!=="?");
+const pairChars=p=>[p.a,p.b].filter(x=>x&&charById(x));
+function pairName(p){if(!p)return "";if((p.name||"").trim())return p.name;return [slotChar(p,"a"),slotChar(p,"b")].map(c=>c.name).join(" × ")}
 function avHtml(c){return '<span class="av" style="--c:'+esc((c&&c.color)||"#F49AC1")+'">'+(c&&c.img?'<img src="'+esc(c.img)+'" alt="">':esc(((c&&c.name)||"?").charAt(0)))+'</span>'}
-function duo(p,size){return '<span class="duo" style="--s:'+(size||56)+'px">'+avHtml(charById(p.a))+HEART+avHtml(charById(p.b))+'</span>'}
+function duo(p,size){return '<span class="duo" style="--s:'+(size||56)+'px">'+avHtml(slotChar(p,"a"))+HEART+avHtml(slotChar(p,"b"))+'</span>'}
 function pmini(p){return '<a class="pmini" href="#pair-'+p.id+'">'+duo(p,64)+'<span class="nm">'+esc(pairName(p))+'</span>'+(p.rel?'<span class="relchip">'+esc(p.rel)+'</span>':'')+'</a>'}
 function pinfo(id){return need("pinfo:"+id,()=>db.doc("pairs/"+id+"/info/main"),true)}
 const maxPairOrder=()=>PAIRS.reduce((m,p)=>Math.max(m,+p.order||0),0);
@@ -670,7 +673,7 @@ function pageHome(){
   }
   return h+'</div>';
 }
-function pairPortrait(p){const A=charById(p.a),B=charById(p.b);return '<div class="pduo">'+frame(A||{name:"?"})+frame(B||{name:"?"})+HEART+'</div>'}
+function pairPortrait(p){return '<div class="pduo">'+frame(slotChar(p,"a"))+frame(slotChar(p,"b"))+HEART+'</div>'}
 function pageChars(){
   let h='<div class="page"><h1 class="pg-title">Characters</h1><p class="pg-sub">'+CHARS.length+'명의 캐릭터</p>';
   if(editing){
@@ -719,16 +722,22 @@ function pagePairs(){
 }
 function pagePair(id){
   const p=pairById(id);if(!p)return coreLoaded.pairs?notFound("페어","pairs"):'<div class="loading">불러오는 중…</div>';
-  const D="pairs/"+id,A=charById(p.a),B=charById(p.b);
-  const opt=(cur)=>'<option value="">선택</option>'+CHARS.map(c=>'<option value="'+c.id+'"'+(c.id===cur?" selected":"")+'>'+esc(c.name)+'</option>').join("");
+  const D="pairs/"+id,A=slotChar(p,"a"),B=slotChar(p,"b");
+  const opt=(cur)=>'<option value=""'+(!cur||!charById(cur)?" selected":"")+'>✎ 직접 입력 (다른 사람 캐릭터)</option>'+CHARS.map(c=>'<option value="'+c.id+'"'+(c.id===cur?" selected":"")+'>'+esc(c.name)+'</option>').join("");
+  const slotEd=(k,label)=>{const sc=slotChar(p,k);let x=fld(label,'<select class="ed" data-doc="'+D+'" data-field="'+k+'" aria-label="'+label+'">'+opt(p[k])+'</select>');
+    if(sc.custom)x+='<div class="ed-box" style="padding:12px;gap:8px">'+fld("이름",ein(D,k+"Name",p[k+"Name"],"상대 캐릭터 이름"))+fld("오너 / 출처",ein(D,k+"Owner",p[k+"Owner"],"예: @친구아이디"))+fld("외형 · 메모 (신청서에 들어가요)",eta(D,k+"Look",p[k+"Look"],"머리색, 눈색, 의상, 특징 등",3))+
+      '<div class="ed-row" style="gap:6px">'+imgBtn(p[k+"Img"]?"사진 바꾸기 (자르기)":"+ 사진 올리기 (자르기)",'data-pslot="'+id+'|'+k+'"')+(p[k+"Img"]?'<button class="btn sm danger fix" data-act="clear-pslot" data-id="'+id+'" data-k="'+k+'">사진 지우기</button>':'')+'</div></div>';
+    return '<div class="stack" style="flex:1 1 220px;gap:8px">'+x+'</div>'};
+  const tagOf=c=>c.custom?'<span class="tag">'+esc(c.name)+(c.owner?' · '+esc(c.owner):'')+'</span> ':'<a href="#char-'+c.id+'" class="tag">'+esc(c.name)+'</a> ';
   let h='<div class="page"><div class="pair-top">'+pairPortrait(p)+'<div style="min-width:0">';
   if(editing){
-    h+='<div class="stack"><div class="ed-row">'+fld("캐릭터 1",'<select class="ed" data-doc="'+D+'" data-field="a" aria-label="캐릭터 1">'+opt(p.a)+'</select>')+fld("캐릭터 2",'<select class="ed" data-doc="'+D+'" data-field="b" aria-label="캐릭터 2">'+opt(p.b)+'</select>')+'</div>'+
+    h+='<div class="stack"><div class="ed-row">'+slotEd("a","캐릭터 1")+slotEd("b","캐릭터 2")+'</div>'+
       fld("페어 이름 (비우면 두 이름으로 보여요)",ein(D,"name",p.name,"예: 하람윤슬",{cls:"h1-in"}))+fld("관계 한 줄",ein(D,"rel",p.rel,"예: 소꿉친구 → 연인"))+fld("관계 설명",eta(D,"desc",p.desc,"둘의 관계, 호칭, 분위기, 함께 그릴 때 주의할 점 등. 신청서에 같이 들어가요.",5))+
       '<div class="ed-row" style="gap:6px">'+imgBtn("관계도 사진 올리기",'data-pinfo="'+id+'"')+'</div></div>';
   }else{
     h+='<p class="kicker">'+SPK+'Pair</p><h1 class="pg-title">'+esc(pairName(p))+'</h1>'+(p.rel?'<p><span class="relchip">'+esc(p.rel)+'</span></p>':'')+
-      '<p style="margin:10px 0 0">'+(A?'<a href="#char-'+A.id+'" class="tag">'+esc(A.name)+'</a> ':'')+(B?'<a href="#char-'+B.id+'" class="tag">'+esc(B.name)+'</a>':'')+'</p>'+
+      '<p style="margin:10px 0 0">'+tagOf(A)+tagOf(B)+'</p>'+
+      customSlots(p).filter(c=>c.look).map(c=>'<div class="note" style="margin-top:10px"><span class="lbl">'+esc(c.name)+'</span>'+br(c.look)+'</div>').join("")+
       (p.desc?'<div class="note" style="margin-top:14px">'+paras(p.desc)+'</div>':'')+
       '<div style="margin-top:18px"><a class="btn primary" href="#request" data-pickpair="'+id+'">이 페어로 신청서 쓰기</a></div>';
   }
@@ -737,8 +746,9 @@ function pagePair(id){
   h+=secTitle("RELATIONSHIP","관계도"+(editing&&has?' · <button class="btn sm danger" data-act="clear-pinfo" data-id="'+id+'">관계도 지우기</button>':''))+(has?'<div class="infobig"><img src="'+esc(inf.doc.data)+'" alt="'+esc(pairName(p))+' 관계도" data-zoom="1"></div>':inf.loading?'<div class="loading">불러오는 중…</div>':'<div class="empty">관계도 사진이 아직 없어요.'+(editing?' 위의 [관계도 사진 올리기]로 넣어 주세요.':'')+'</div>');
   const refs=need("prefs:"+id,()=>db.collection(D+"/refs").orderBy("t","asc").limit(60));
   h+=secTitle("REFERENCE",(refs.loading?"":refs.docs.length+"장")+(editing?' · '+imgBtn("+ 이미지 추가",'data-prefs="'+id+'"',true):''))+galHtml(refs,D+"/refs","둘이 함께 있는 설정화나 참고 이미지를 올려 두면 신청할 때 편해요.");
-  if(p.a){const ws=need("cw:"+p.a,()=>db.collection("works").where("chars","array-contains",p.a).limit(500));
-    const list=ws.docs.filter(w=>(w.chars||[]).includes(p.b)).sort(byReqDesc);
+  const pc=pairChars(p);
+  if(pc.length){const ws=need("cw:"+pc[0],()=>db.collection("works").where("chars","array-contains",pc[0]).limit(500));
+    const list=ws.docs.filter(w=>pc.every(x=>(w.chars||[]).includes(x))).sort(byReqDesc);
     h+=secTitle("ARTWORKS",list.length+'개의 작업 · '+viewSeg())+worksBlock(ws,list,"둘이 함께 나온 작업물이 아직 없어요.",null)}
   if(canWrite){const rq=need("preqs:"+id,()=>db.collection("reqs").where("pairId","==",id).limit(100));
     const list=rq.docs.slice().sort((a,b)=>(b.t||0)-(a.t||0));
@@ -911,7 +921,7 @@ function addFormImages(files){
    .then(()=>{saving=false;render(true);toast("이미지를 넣었어요. 지금 "+RIMG.length+"장")});
 }
 function submitReq(){
-  const miss=[];if(!F.type.trim())miss.push("신청 항목");if(!F.chars.length)miss.push("캐릭터");if(!F.detail.trim())miss.push("요청 사항");if(!RIMG.length)miss.push("참고 이미지");
+  const miss=[];if(!F.type.trim())miss.push("신청 항목");if(!F.chars.length&&!F.pairId)miss.push("캐릭터");if(!F.detail.trim())miss.push("요청 사항");if(!RIMG.length)miss.push("참고 이미지");
   if(miss.length){formErr=miss.join(", ")+"을(를) 채워 주세요.";render(true);const el=$("[role=alert]");if(el)el.scrollIntoView({behavior:"smooth",block:"center"});return}
   formErr="";
   if(!canWrite){previewOn=true;render(true);return}
@@ -930,6 +940,7 @@ function reqText(r,n){
   L.push("■ 신청 항목: "+(r.type||""),"■ 캐릭터: "+sel.map(c=>c.name).join(", "));
   const pr=r.pairId?pairById(r.pairId):null;
   if(pr)L.push("■ 페어: "+pairName(pr)+(pr.rel?" ("+pr.rel+")":""));
+  if(pr&&customSlots(pr).length)L[L.length-2]="■ 캐릭터: "+sel.map(c=>c.name).concat(customSlots(pr).map(c=>c.name)).join(", ");
   if(r.due)L.push("■ 희망 마감일: "+r.due);
   if(r.budget)L.push("■ 예산: "+r.budget);
   sel.forEach(c=>{const b=[],p=c.p||{};
@@ -938,6 +949,7 @@ function reqText(r,n){
     if(r.incCaution&&c.caution)b.push("주의사항: "+c.caution);
     if((c.refLinks||"").trim())b.push("참고: "+c.refLinks.trim().split("\n").join("\n      "));
     if(b.length)L.push("","["+c.name+"]",b.join("\n"))});
+  if(pr)customSlots(pr).forEach(c=>{const b=[];if(c.owner)b.push("오너: "+c.owner);if(c.look)b.push("외형: "+c.look);L.push("","["+c.name+"]"+(b.length?"\n"+b.join("\n"):""))});
   if(pr&&pr.desc)L.push("","[페어 관계]",pr.desc);
   L.push("","■ 요청 사항",r.detail||"");
   if(r.refs)L.push("","■ 참고 링크",r.refs);
@@ -957,7 +969,7 @@ function postHtml(r,imgs,id){
    '<div class="byline">'+esc(r.date||"")+(SITE.nick?' · '+esc(SITE.nick):'')+'</div>'+
    '<div class="post-chips">'+(r.artist?'<span class="pchip lav">to. '+esc(r.artist)+'</span>':'')+(r.type?'<span class="pchip">'+esc(r.type)+'</span>':'')+(id?rchip(r.rstatus):'')+'</div></header>'+
    '<div class="post-body">'+(SITE.greeting?'<p>'+esc(SITE.greeting)+'</p>':'')+
-   '<dl class="facts"><dt>신청 항목</dt><dd>'+esc(r.type||"-")+'</dd><dt>캐릭터</dt><dd>'+(sel.map(c=>esc(c.name)).join(", ")||"-")+'</dd>'+(pr?'<dt>페어</dt><dd>'+esc(pairName(pr))+(pr.rel?' · '+esc(pr.rel):'')+'</dd>':'')+(r.due?'<dt>희망 마감</dt><dd>'+esc(r.due)+'</dd>':'')+(r.budget?'<dt>예산</dt><dd>'+esc(r.budget)+'</dd>':'')+(r.usage?'<dt>사용 범위</dt><dd>'+esc(r.usage)+'</dd>':'')+'</dl>'+
+   '<dl class="facts"><dt>신청 항목</dt><dd>'+esc(r.type||"-")+'</dd><dt>캐릭터</dt><dd>'+(sel.map(c=>c.name).concat(pr?customSlots(pr).map(c=>c.name):[]).map(esc).join(", ")||"-")+'</dd>'+(pr?'<dt>페어</dt><dd>'+esc(pairName(pr))+(pr.rel?' · '+esc(pr.rel):'')+'</dd>':'')+(r.due?'<dt>희망 마감</dt><dd>'+esc(r.due)+'</dd>':'')+(r.budget?'<dt>예산</dt><dd>'+esc(r.budget)+'</dd>':'')+(r.usage?'<dt>사용 범위</dt><dd>'+esc(r.usage)+'</dd>':'')+'</dl>'+
    h2("요청 사항")+(paras(r.detail)||'<p class="muted">-</p>');
   const notes=sel.map(c=>{const p=c.p||{},ln=[];
     if(r.incFields)keys().filter(k=>p[k]).forEach(k=>ln.push('<div class="ln"><em>'+esc(k)+'</em>'+esc(p[k])+'</div>'));
@@ -966,7 +978,8 @@ function postHtml(r,imgs,id){
     if((c.refLinks||"").trim())ln.push('<div class="ln"><em>참고</em>'+c.refLinks.split("\n").filter(l=>l.trim()).map(l=>{const u=safeUrl(l);return u?'<a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(l)+'</a>':esc(l)}).join("<br>")+'</div>');
     return '<div class="cnote">'+frame(c)+'<div><b>'+esc(c.name)+'</b>'+(c.sub?'<div class="hint">'+esc(c.sub)+'</div>':'')+ln.join("")+'</div></div>'}).join("");
   if(pr){const pi=pinfo(pr.id);h+=h2("페어 관계")+'<div class="cnote pnote" style="grid-template-columns:auto minmax(0,1fr)">'+duo(pr,46)+'<div><b>'+esc(pairName(pr))+'</b>'+(pr.rel?'<div class="hint">'+esc(pr.rel)+'</div>':'')+(pr.desc?'<div class="ln">'+br(pr.desc)+'</div>':'')+'</div></div>'+(pi.doc&&pi.doc.data?'<img class="relimg" src="'+esc(pi.doc.data)+'" alt="관계도" data-zoom="1">':'')}
-  if(notes)h+=h2("캐릭터 정보")+notes;
+  const cnotes=pr?customSlots(pr).map(c=>'<div class="cnote">'+frame(c)+'<div><b>'+esc(c.name)+'</b>'+(c.owner?'<div class="hint">'+esc(c.owner)+'</div>':'')+(c.look?'<div class="ln"><em>외형</em>'+br(c.look)+'</div>':'')+'</div></div>').join(""):"";
+  if(notes||cnotes)h+=h2("캐릭터 정보")+notes+cnotes;
   h+=h2("참고 이미지 · "+imgs.length+"장")+(imgs.length?'<div class="pgal">'+imgs.map((d,i)=>'<img src="'+esc(d)+'" alt="참고 이미지 '+(i+1)+'" data-zoom="1" loading="lazy">').join("")+'</div>':'<p class="muted">이미지가 없어요.</p>');
   if(r.refs)h+=h2("참고 링크")+'<p>'+r.refs.split("\n").filter(l=>l.trim()).map(l=>{const u=safeUrl(l);return u?'<a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(l)+'</a>':esc(l)}).join("<br>")+'</p>';
   if(SITE.closing)h+='<p style="margin-top:30px">'+esc(SITE.closing)+'</p>';
@@ -1127,7 +1140,7 @@ document.addEventListener("input",e=>{
   const t=e.target,d=t.dataset;
   if(t.id==="char-q"){charQ=t.value;render(true);return}
   if(d.f){F[d.f]=t.type==="checkbox"?t.checked:t.value;saveForm();if(d.f==="artist"){const b=$("#how-box");if(b){const tmp=document.createElement("div");tmp.innerHTML=howBox();b.replaceWith(tmp.firstChild)}}return}
-  if(d.fchar){F.chars=[...document.querySelectorAll("[data-fchar]:checked")].map(x=>x.value);if(F.pairId){const pq=pairById(F.pairId);if(!pq||!F.chars.includes(pq.a)||!F.chars.includes(pq.b)){F.pairId="";saveForm();render(true);return}}saveForm();const hn=$("#ch-count");if(hn)hn.textContent=F.chars.length+"명 선택";return}
+  if(d.fchar){F.chars=[...document.querySelectorAll("[data-fchar]:checked")].map(x=>x.value);if(F.pairId){const pq=pairById(F.pairId);if(!pq||!pairChars(pq).every(x=>F.chars.includes(x))){F.pairId="";saveForm();render(true);return}}saveForm();const hn=$("#ch-count");if(hn)hn.textContent=F.chars.length+"명 선택";return}
   if(d.rfilt){reqFilt[d.rfilt]=t.value;render(true);return}
   if(d.doc&&d.field&&t.tagName!=="SELECT"&&!["checkbox","color"].includes(t.type))bindWrite(t,false);
 });
@@ -1139,6 +1152,7 @@ document.addEventListener("change",e=>{
   if(d.artistOf){const wid=d.artistOf,nm=t.value.trim();ensureArtist(nm).then(aid=>upd("works/"+wid,{artist:nm,artistId:aid||""}));return}
   if(d.charimg&&t.files&&t.files[0]){const cid=d.charimg;openCrop(t.files[0],{title:"대표 사진 자르기",aspects:[["3:4",3/4],["1:1",1],["원본",0]],max:1000,limit:150000,save:data=>upd("chars/"+cid,{img:data}),ok:"대표 사진을 바꿨어요."});t.value="";return}
   if(d.siteimg&&t.files&&t.files[0]){const k=d.siteimg;openCrop(t.files[0],k==="banner"?{title:"배너 사진 자르기",aspects:[["와이드",3.6],["4:1",4],["원본",0]],max:1600,limit:240000,save:data=>setDoc("site/main",{banner:data},true),ok:"배너를 바꿨어요."}:{title:"프로필 사진 자르기",aspects:[["1:1",1]],max:500,limit:70000,save:data=>setDoc("site/main",{avatar:data},true),ok:"프로필 사진을 바꿨어요."});t.value="";return}
+  if(d.pslot&&t.files&&t.files[0]){const [pid,k]=d.pslot.split("|");openCrop(t.files[0],{title:"캐릭터 사진 자르기",aspects:[["3:4",3/4],["1:1",1],["원본",0]],max:900,limit:150000,save:data=>upd("pairs/"+pid,{[k+"Img"]:data}),ok:"사진을 넣었어요."});t.value="";return}
   if(d.pinfo&&t.files&&t.files[0]){const pid=d.pinfo;openCrop(t.files[0],{title:"관계도 사진",aspects:[["원본",0],["4:3",4/3],["16:9",16/9],["1:1",1],["3:4",3/4]],max:1800,limit:450000,save:data=>setDoc("pairs/"+pid+"/info/main",{data,t:Date.now()}),ok:"관계도를 저장했어요."});t.value="";return}
   if(d.prefs&&t.files&&t.files.length){addImages(t.files,"pairs/"+d.prefs+"/refs");return}
   if(d.cinfo&&t.files&&t.files[0]){const cid=d.cinfo;openCrop(t.files[0],{title:"정보 사진",aspects:[["원본",0],["3:4",3/4],["4:3",4/3],["16:9",16/9],["1:1",1]],max:1800,limit:450000,save:data=>setDoc("chars/"+cid+"/info/main",{data,t:Date.now()}),ok:"정보 사진을 저장했어요."});t.value="";return}
@@ -1162,7 +1176,7 @@ document.addEventListener("click",e=>{
   const z=e.target.closest("[data-zoom]");if(z){lightbox=z.getAttribute("src");render(true);return}
   if(e.target.closest("select"))return;
   const pk=e.target.closest("[data-pick]");if(pk){F.chars=[pk.dataset.pick];F.pairId="";output=null;saveForm()}
-  const pp=e.target.closest("[data-pickpair]");if(pp){const q=pairById(pp.dataset.pickpair);if(q){F.pairId=q.id;F.chars=[q.a,q.b].filter(Boolean);output=null;saveForm()}}
+  const pp=e.target.closest("[data-pickpair]");if(pp){const q=pairById(pp.dataset.pickpair);if(q){F.pairId=q.id;F.chars=pairChars(q);output=null;saveForm()}}
   const pa=e.target.closest("[data-pick-artist]");if(pa){F.artist=pa.dataset.pickArtist;output=null;saveForm()}
   const go=e.target.closest("[data-go]");if(go&&!e.target.closest("a")){location.hash=go.dataset.go;return}
   const b=e.target.closest("[data-act]");if(!b)return;
@@ -1190,12 +1204,13 @@ document.addEventListener("click",e=>{
       let oa=+A.order||i,ob=+B.order||j;if(oa===ob)ob=oa+(+b.dataset.d);upd("chars/"+A.id,{order:ob});upd("chars/"+B.id,{order:oa});break}
     case "clear-charimg":upd("chars/"+b.dataset.id,{img:""});break;
     case "clear-siteimg":setDoc("site/main",{[b.dataset.k]:""},true);break;
+    case "clear-pslot":upd("pairs/"+b.dataset.id,{[b.dataset.k+"Img"]:""});break;
     case "clear-pinfo":delDoc("pairs/"+b.dataset.id+"/info/main").then(()=>toast("관계도를 지웠어요."));break;
     case "add-pair":{const a=b.dataset.a||"",others=CHARS.filter(c=>c.id!==a),id=uid();
-      setDoc("pairs/"+id,{a:a||(CHARS[0]?CHARS[0].id:""),b:a?(others[0]?others[0].id:""):(CHARS[1]?CHARS[1].id:""),name:"",rel:"",desc:"",order:maxPairOrder()+1,t:Date.now()}).then(()=>{editing=true;location.hash="pair-"+id});break}
+      setDoc("pairs/"+id,{a:a||(CHARS[0]?CHARS[0].id:""),b:"",bName:"",bImg:"",bOwner:"",bLook:"",name:"",rel:"",desc:"",order:maxPairOrder()+1,t:Date.now()}).then(()=>{editing=true;location.hash="pair-"+id});break}
     case "mv-pair":{const i=+b.dataset.i,j=i+(+b.dataset.d),A=PAIRS[i],B=PAIRS[j];if(!A||!B)break;
       let oa=+A.order||i,ob=+B.order||j;if(oa===ob)ob=oa+(+b.dataset.d);upd("pairs/"+A.id,{order:ob});upd("pairs/"+B.id,{order:oa});break}
-    case "fpair":{const p=pairById(b.dataset.id);if(!p)break;if(F.pairId===p.id){F.pairId=""}else{F.pairId=p.id;F.chars=[p.a,p.b].filter(Boolean)}output=null;saveForm();render(true);break}
+    case "fpair":{const p=pairById(b.dataset.id);if(!p)break;if(F.pairId===p.id){F.pairId=""}else{F.pairId=p.id;F.chars=pairChars(p)}output=null;saveForm();render(true);break}
     case "clear-cinfo":delDoc("chars/"+b.dataset.id+"/info/main").then(()=>toast("정보 사진을 지웠어요."));break;
     case "cview":charView=b.dataset.v;lsSet("cb-cview",charView);render(true);break;
     case "del-img":{const ip=b.dataset.path;delDoc(ip).then(()=>{
