@@ -132,7 +132,7 @@ a.tile:hover{border-color:var(--cherry)}
 .gal.big img{aspect-ratio:auto;max-height:560px;object-fit:contain;background:var(--paper2)}
 .gal .x{position:absolute;top:8px;right:8px;background:var(--card)}
 .lightbox{position:fixed;inset:0;z-index:60;background:rgba(14,22,40,.88);display:grid;place-items:center;padding:24px;cursor:zoom-out}
-.lightbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
+.lightbox img{display:block;width:auto;height:auto;max-width:calc(100vw - 48px);max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);object-fit:contain;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
 
 /* table */
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:0 0 20px}
@@ -556,6 +556,22 @@ body{background:#F3E8ED;background-image:none;font-size:15px}
 .march{position:relative;width:min(100%,250px);aspect-ratio:3/4;margin:0 auto;border-radius:999px 999px 3px 3px;border:1.5px solid var(--cherry-deep);outline:1px solid var(--line);outline-offset:5px;overflow:hidden;background:var(--rose)}
 .march img{width:100%;height:100%;object-fit:cover;display:block}
 .march+svg{display:none}
+.hp-nmrow{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.hp-nmrow .hp-nm{margin-top:0}
+.hp-tag{border:1.5px solid var(--cherry-deep);outline:1px solid var(--line);outline-offset:3px;padding:3px 10px;font-family:var(--f-display);font-size:14px;color:var(--cherry-deep);background:#fff;max-width:100%;overflow-wrap:anywhere}
+.hp-nmrow input.ed{width:150px;padding:6px 8px;font-size:13px}
+.mheart{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 14px}
+.mheart::before,.mheart::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--cherry-deep));max-width:90px}
+.mheart::after{background:linear-gradient(270deg,transparent,var(--cherry-deep))}
+.mheart svg{width:46px;height:40px;flex:none;filter:drop-shadow(0 2px 3px rgba(110,54,83,.18))}
+.march img,.hstat-img img{cursor:zoom-in}
+.inl-ed{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px}
+.hstat-img{margin:4px 0 0;border:1.5px solid var(--cherry-deep);outline:1px solid var(--line);outline-offset:4px;background:var(--rose);overflow:hidden}
+.hstat-img img{display:block;width:100%;height:auto}
+.hstat-empty{display:grid;place-items:center;aspect-ratio:4/3;color:var(--cherry);font-size:13px;text-align:center;padding:10px}
+.hstat .msgbox{white-space:normal;max-height:none}
+.hstat textarea.ed{width:100%;min-height:150px}
+.sched[hidden]{display:none!important}
 .mcap{margin-top:16px;background:var(--cherry-deep);color:#fff;font-family:var(--f-display);font-style:italic;font-size:15px;padding:6px 12px;text-align:center;line-height:1.55;overflow-wrap:anywhere}
 .hwel p{display:none}
 .msgbox{border:0;background:transparent;padding:0;margin-top:6px;font-size:14.5px}
@@ -775,7 +791,7 @@ function pageHome(){
     h+='<div class="ed-box" style="margin-bottom:22px">'+fld("보관함 이름 (맨 위 큰 글씨)",ein("site/main","name",SITE.name,"예: Commission Box",{cls:"h1-in",merge:true}))+
       '<div class="ed-row" style="gap:6px">'+imgBtn(SITE.banner?"맨 위 배너 사진 바꾸기":"+ 맨 위 배너 사진",'data-siteimg="banner"')+(SITE.banner?'<button class="btn sm danger fix" data-act="clear-siteimg" data-k="banner">배너 지우기</button>':'')+
       imgBtn(SITE.avatar?"프로필 사진 바꾸기":"+ 프로필 사진",'data-siteimg="avatar"')+(SITE.avatar?'<button class="btn sm danger fix" data-act="clear-siteimg" data-k="avatar">프로필 지우기</button>':'')+'</div>'+
-      fld("Welcome 글",eta("site/main","intro",SITE.intro,"",3,{merge:true}))+fld("Message 글 (공지, 한마디)",eta("site/main","message",SITE.message,"예: 오늘도 우리 아이들 보러 와 줘서 고마워요 ♡",2,{merge:true}))+
+      fld("Welcome 글",eta("site/main","intro",SITE.intro,"",3,{merge:true}))+
       '<div class="ed-row">'+fld("내 닉네임 (신청서에도 들어가요)",ein("site/main","nick",SITE.nick,"예: 가나뒹",{merge:true}))+fld("내 연락처 (신청서에도 들어가요)",ein("site/main","contact",SITE.contact,"예: X @아이디",{merge:true}))+'</div>'+
       fld("내 링크 (한 줄에 하나씩)",eta("site/main","links",SITE.links,"https://x.com/...",2,{merge:true}))+'</div>';
   }
@@ -787,13 +803,14 @@ function pageHome(){
   const firstImg=CHARS.find(c=>c.img);
   const archImg=(done[0]&&done[0].thumb)||(firstImg&&firstImg.img)||"",nP=PAIRS.filter(q=>!isGroup(q)).length,nG=PAIRS.length-nP;
   h+='<div class="hgrid"><aside class="hprof"><div class="mbar"><span class="on">Profile</span><a href="#chars">Characters</a>'+SWATCH+'</div><div class="hp-av" style="margin:6px auto 0">'+(SITE.avatar?'<img src="'+esc(SITE.avatar)+'" alt="프로필">':firstImg?'<img src="'+esc(firstImg.img)+'" alt="">':'&amp;')+'</div>'+
-     '<b class="hp-nm">'+esc(SITE.nick||SITE.name)+'</b>'+(SITE.contact?'<p>'+esc(SITE.contact)+'</p>':'')+(links?'<div class="hp-links">'+links+'</div>':'')+'</aside>'+
-   '<section class="hwel"><div class="mlabel"><i></i>Welcome</div><div class="march">'+(archImg?'<img src="'+esc(archImg)+'" alt="">':'')+'</div><div class="mcap">'+br(SITE.intro)+'</div></section>'+
-   '<aside class="hstat"><div class="mbar"><span class="on">Status</span><a href="#pairs">Pairs</a>'+SWATCH+'</div><table class="sched"><tbody>'+
+     '<div class="hp-nmrow"><b class="hp-nm">'+esc(SITE.nick||SITE.name)+'</b>'+(editing?ein("site/main","nameTag",SITE.nameTag,"커미션주 기입란",{merge:true}):SITE.nameTag?'<span class="hp-tag">'+esc(SITE.nameTag)+'</span>':'')+'</div>'+(SITE.contact?'<p>'+esc(SITE.contact)+'</p>':'')+(links?'<div class="hp-links">'+links+'</div>':'')+'</aside>'+
+   '<section class="hwel"><div class="mheart"><svg viewBox="0 0 46 40" aria-hidden="true"><defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6CFE0"/><stop offset="1" stop-color="#C77A9E"/></linearGradient></defs><path d="M23 37C10 28 3 21 3 12.5 3 7 7.3 3 12.4 3c4.3 0 7.9 2.6 10.6 6.3C25.7 5.6 29.3 3 33.6 3 38.7 3 43 7 43 12.5 43 21 36 28 23 37z" fill="url(#hg)" stroke="#6E3653" stroke-width="1.6"/><path d="M23 31.5C14 25 8.5 19.8 8.5 13.4c0-3 2.3-5.3 5.2-5.3" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="1.6" stroke-linecap="round"/><circle cx="33" cy="11" r="2.2" fill="#fff" fill-opacity=".85"/></svg></div><div class="march">'+((SITE.welcomeImg||archImg)?'<img data-zoom src="'+esc(SITE.welcomeImg||archImg)+'" alt="">':'')+'</div>'+(editing?'<div class="inl-ed">'+imgBtn(SITE.welcomeImg?"가운데 사진 바꾸기":"+ 가운데 사진 넣기",'data-siteimg="welcomeImg"')+(SITE.welcomeImg?'<button class="btn sm danger fix" data-act="clear-siteimg" data-k="welcomeImg">지우기</button>':'')+'</div>':'')+'<div class="mcap">'+br(SITE.intro)+'</div></section>'+
+   '<aside class="hstat"><div class="mbar"><span class="on">Status</span><a href="#pairs">Pairs</a>'+SWATCH+'</div>'+(SITE.statImg?'<div class="hstat-img"><img data-zoom src="'+esc(SITE.statImg)+'" alt=""></div><table class="sched" hidden><tbody>':'<table class="sched"><tbody>')+
      '<tr><td>CHAR</td><td><a href="#chars"><b>'+CHARS.length+'</b> 캐릭터</a></td></tr>'+
      '<tr><td>PAIR</td><td><a href="#pairs"><b>'+nP+'</b> 페어</a></td></tr>'+
      '<tr><td>GROUP</td><td><a href="#pairs"><b>'+nG+'</b> 단체</a></td></tr>'+
-     '</tbody></table><div class="mmsg-h">Message.</div><div class="msgbox">'+(SITE.message?br(SITE.message):'오늘도 우리 아이들 보러 와 줘서 고마워요.')+'</div></aside></div>'+
+     '</tbody></table>'+(editing?'<div class="inl-ed">'+imgBtn(SITE.statImg?"그림 바꾸기":"+ 그림 넣기",'data-siteimg="statImg"')+(SITE.statImg?'<button class="btn sm danger fix" data-act="clear-siteimg" data-k="statImg">지우기</button>':'')+'</div>':'')+
+     '<div class="mmsg-h">'+esc(SITE.nick||SITE.name||"Message.")+'</div>'+(editing?eta("site/main","message",SITE.message,"하고 싶은 말을 자유롭게 길게 적어도 돼요",7,{merge:true}):'<div class="msgbox">'+(SITE.message?br(SITE.message):'오늘도 우리 아이들 보러 와 줘서 고마워요.')+'</div>')+'</aside></div>'+
    '<div class="mquote">For dear visitors, here I present my beloved characters and their stories.<div class="hcta"><a class="btn primary" href="#chars">캐릭터 보기</a><a class="btn" href="#pairs">페어·단체 보기</a><a class="btn" href="#works">작업물 보기</a></div></div>';
   if(canWrite&&coreLoaded.chars&&!CHARS.length)h+='<div class="note center" style="margin-top:22px"><b>처음이에요?</b> 순서대로 따라 하면 금방 시작할 수 있어요. <a href="#guide">사용법 보기 →</a></div>';
   h+=secTitle("New Arrivals","최근 완성작")+(dn.loading?'<div class="loading">불러오는 중…</div>':done.length?'<div class="grid">'+done.map(workCard).join("")+'</div>':'<div class="empty">완성된 작업이 아직 없어요.</div>');
@@ -1299,7 +1316,7 @@ document.addEventListener("change",e=>{
   if(d.wchars){upd("works/"+d.wchars,{chars:[...document.querySelectorAll('[data-wchars="'+d.wchars+'"]:checked')].map(x=>x.value)});return}
   if(d.artistOf){const wid=d.artistOf,nm=t.value.trim();ensureArtist(nm).then(aid=>upd("works/"+wid,{artist:nm,artistId:aid||""}));return}
   if(d.charimg&&t.files&&t.files[0]){const cid=d.charimg;openCrop(t.files[0],{title:"대표 사진 자르기",aspects:[["3:4",3/4],["1:1",1],["원본",0]],max:1000,limit:150000,save:data=>upd("chars/"+cid,{img:data}),ok:"대표 사진을 바꿨어요."});t.value="";return}
-  if(d.siteimg&&t.files&&t.files[0]){const k=d.siteimg;openCrop(t.files[0],k==="banner"?{title:"배너 사진 자르기",aspects:[["와이드",3.6],["4:1",4],["원본",0]],max:1600,limit:240000,save:data=>setDoc("site/main",{banner:data},true),ok:"배너를 바꿨어요."}:{title:"프로필 사진 자르기",aspects:[["1:1",1]],max:500,limit:70000,save:data=>setDoc("site/main",{avatar:data},true),ok:"프로필 사진을 바꿨어요."});t.value="";return}
+  if(d.siteimg&&t.files&&t.files[0]){const k=d.siteimg;if(k==="welcomeImg"||k==="statImg"){openCrop(t.files[0],{title:k==="welcomeImg"?"가운데 사진 자르기":"그림 자르기",aspects:k==="welcomeImg"?[["3:4",3/4],["원본",0]]:[["원본",0],["1:1",1],["4:3",4/3],["3:4",3/4]],max:1000,limit:200000,save:data=>setDoc("site/main",{[k]:data},true),ok:"사진을 넣었어요."});t.value="";return}openCrop(t.files[0],k==="banner"?{title:"배너 사진 자르기",aspects:[["와이드",3.6],["4:1",4],["원본",0]],max:1600,limit:240000,save:data=>setDoc("site/main",{banner:data},true),ok:"배너를 바꿨어요."}:{title:"프로필 사진 자르기",aspects:[["1:1",1]],max:500,limit:70000,save:data=>setDoc("site/main",{avatar:data},true),ok:"프로필 사진을 바꿨어요."});t.value="";return}
   if(d.gmimg&&t.files&&t.files[0]){const [pid,i]=d.gmimg.split("|");openCrop(t.files[0],{title:"멤버 사진 자르기",aspects:[["3:4",3/4],["1:1",1],["원본",0]],max:700,limit:90000,save:data=>gmSet(pid,+i,"img",data),ok:"사진을 넣었어요."});t.value="";return}
   if(d.pslot&&t.files&&t.files[0]){const [pid,k]=d.pslot.split("|");openCrop(t.files[0],{title:"캐릭터 사진 자르기",aspects:[["3:4",3/4],["1:1",1],["원본",0]],max:900,limit:150000,save:data=>upd("pairs/"+pid,{[k+"Img"]:data}),ok:"사진을 넣었어요."});t.value="";return}
   if(d.pinfo&&t.files&&t.files[0]){const pid=d.pinfo;openCrop(t.files[0],{title:"관계도 사진",aspects:[["원본",0],["4:3",4/3],["16:9",16/9],["1:1",1],["3:4",3/4]],max:1800,limit:450000,save:data=>setDoc("pairs/"+pid+"/info/main",{data,t:Date.now()}),ok:"관계도를 저장했어요."});t.value="";return}
