@@ -656,6 +656,42 @@ body{background:#F3E8ED;background-image:none;font-size:15px}
 .ps-gmi{text-align:center}.ps-gmi .ps-fig img{max-height:300px}.ps-gmi .ps-nm{font-size:16px;margin-top:8px}
 .ps-act{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 @media (max-width:760px){.ps-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.ps-center{grid-column:1/-1;order:-1}.ps-title{font-size:26px}}
+
+/* v13 */
+.ps-figs .ps-fig{aspect-ratio:3/4;height:auto;width:100%;max-width:300px;margin:0 auto}.psheet.big .ps-figs .ps-fig{max-width:380px}
+.ps-figs .ps-fig img{width:100%;height:100%;max-height:none!important;object-fit:contain;object-position:50% 100%}
+.ps-figs .ps-ini{height:100%;width:100%}
+.ps-gmi .ps-fig img{max-height:100%!important;width:auto;object-fit:contain}
+.ps-gmi .ps-fig{height:280px}.ps-gmi .ps-ini{height:100%;width:auto}
+.ps-foot{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap;margin-top:20px}
+.pz-wrap{border-bottom:1px solid var(--line);padding:24px 0 26px;margin-bottom:8px}
+.poster{position:relative;overflow:hidden;background:#fff;min-height:clamp(520px,50vw,660px);box-shadow:0 1px 0 var(--line)}
+.pz-bg{position:absolute;top:0;bottom:0;width:40%;z-index:0}
+.pz-bg.a{left:0;-webkit-mask-image:linear-gradient(90deg,#000 40%,transparent);mask-image:linear-gradient(90deg,#000 40%,transparent)}
+.pz-bg.b{right:0;-webkit-mask-image:linear-gradient(270deg,#000 40%,transparent);mask-image:linear-gradient(270deg,#000 40%,transparent)}
+.pz-bg img{width:100%;height:100%;object-fit:cover;object-position:50% 12%;display:block}
+.pz-sws{position:absolute;top:22px;z-index:2}.pz-sws.a{left:22px}.pz-sws.b{right:22px}
+.pz-sw i{display:block;width:24px;height:24px;transform:rotate(45deg);margin:0 0 18px;box-shadow:0 2px 5px rgba(0,0,0,.18)}
+.pz-copy{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:11px;color:#aaa;z-index:2;white-space:nowrap}
+.pz-mid{position:relative;z-index:1;width:min(60%,760px);margin:0 auto;padding:40px 0 24px}
+.pz-head{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;margin:0 -24%}
+.pz-q{font-family:"Gowun Batang",serif;font-size:clamp(14px,2vw,26px);color:rgba(60,40,50,.4);white-space:nowrap}.pz-q.a{text-align:right}
+.pz-tw{position:relative;text-align:center}
+.pz-title{position:relative;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-weight:800;font-size:clamp(30px,4.6vw,62px);color:#141414;text-decoration:none;letter-spacing:-.01em;line-height:1;white-space:nowrap}
+.pz-script{position:absolute;left:50%;top:50%;transform:translate(-50%,-25%) rotate(-6deg);font-family:var(--f-script);font-size:clamp(56px,8vw,120px);color:rgba(0,0,0,.1);white-space:nowrap;pointer-events:none}
+.pz-rule{height:1px;background:#999;width:72%;margin:16px auto 24px}
+.pz-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.pz-col{display:flex;flex-direction:column;gap:16px;min-width:0}.pz-col.b{text-align:right;align-items:flex-end}
+.pz-nm{margin:0;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:clamp(24px,2.8vw,40px);font-weight:800;display:flex;align-items:center;gap:12px}.pz-col.b .pz-nm{justify-content:flex-end}
+.pz-nm a{color:#141414;text-decoration:none}
+.pz-dia{width:14px;height:14px;background:#141414;transform:rotate(45deg);display:inline-block;flex:none}
+.pz-tags{margin:4px 0 0;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-weight:700;font-size:13.5px;color:#222}
+.pz-desc{margin:10px 0 0;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:13.5px;line-height:1.75;color:#222}
+.pz-face{width:90%;aspect-ratio:5/6;border-radius:18px;overflow:hidden;box-shadow:12px 12px 0 rgba(0,0,0,.16);background:#eee}
+.pz-face img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;display:block}
+.pz-chibi{align-self:center}.pz-chibi img{max-height:210px;max-width:100%;display:block}
+.pz-ed{border:1px dashed var(--line);padding:14px;border-radius:4px}
+@media (max-width:760px){.pz-mid{width:auto;padding:34px 14px 18px}.pz-bg{width:55%;opacity:.35}.pz-head{grid-template-columns:1fr;margin:0}.pz-q{text-align:center!important;white-space:normal}.pz-cols{gap:12px}.pz-sws{display:none}}
 </style>
 </head>
 <body>
@@ -789,19 +825,33 @@ const byReqDesc=(a,b)=>(b.reqDate||"").localeCompare(a.reqDate||"")||(b.t||0)-(a
 /* ---------- small renderers ---------- */
 function byLine(doc,v){return editing?'<div class="by-w">'+ein(doc,"imgBy",v,"그림 작가 이름",{cls:"bare"})+'</div>':(v?'<span class="by">'+esc(v)+'</span>':'')}
 function trunc(t,n){t=String(t||"");return t.length>n?t.slice(0,n)+"…":t}
-function psheet(p,big){
+function psheet(p,big,acts){
   const G=isGroup(p),ms=mem(p),nm=pairName(p),href="#pair-"+p.id;
   const lk=c=>c.custom?href:"#char-"+c.id;
   const fig=c=>'<figure class="ps-fig">'+(c.img?'<img src="'+esc(c.img)+'" alt="'+esc(c.name)+'" data-zoom="1" loading="lazy">':'<span class="ps-ini">'+esc((c.name||"?").charAt(0))+'</span>')+'</figure>';
   const relbox='<div class="ps-relbox"><span class="ps-rel">RELATION</span>'+(p.rel?'<p class="ps-relt">'+esc(p.rel)+'</p>':'')+(p.desc?'<p class="ps-desc">'+(big?br(p.desc):esc(trunc(p.desc,90)))+'</p>':'')+'</div>';
   let h='<section class="psheet'+(big?" big":"")+'"><header class="ps-head"><a class="ps-title" href="'+href+'">'+esc(nm)+'</a><span class="ps-kind">'+(G?"GROUP · "+ms.length:"PAIR")+'</span></header><div class="ps-line"></div>';
-  if(G)return h+relbox+'<div class="ps-gm">'+ms.map(c=>'<div class="ps-gmi">'+fig(c)+'<a class="ps-nm" href="'+lk(c)+'">'+esc(c.name)+'</a><span class="ps-en">'+esc(c.custom?c.owner:(c.sub||""))+'</span></div>').join("")+'</div></section>';
+  if(G)return h+relbox+'<div class="ps-gm">'+ms.map(c=>'<div class="ps-gmi">'+fig(c)+'<a class="ps-nm" href="'+lk(c)+'">'+esc(c.name)+'</a><span class="ps-en">'+esc(c.custom?c.owner:(c.sub||""))+'</span></div>').join("")+'</div>'+(acts?'<div class="ps-foot">'+acts+'</div>':'')+'</section>';
   const side=(c,L)=>{const pp=c.p||{};const rows=c.custom?[["오너",c.owner]].filter(r=>r[1]):keys().filter(k=>pp[k]).slice(0,big?7:4).map(k=>[k,pp[k]]);const kwt=c.look||"";
     return '<div class="ps-side '+L+'"><div class="ps-id"><b class="ps-badge">'+L.toUpperCase()+'</b><div style="min-width:0"><a class="ps-nm" href="'+lk(c)+'">'+esc(c.name)+'</a><span class="ps-en">'+esc(c.custom?"":(c.sub||""))+'</span></div></div>'+
       rows.map(r=>'<div class="ps-row"><span class="k">'+esc(r[0])+'</span><span class="v">'+esc(r[1])+'</span></div>').join("")+
       (kwt?'<div class="ps-kw"><b>KEYWORD</b><p>'+(big?br(kwt):esc(trunc(kwt,70)))+'</p></div>':'')+(!c.custom&&c.color?'<div class="ps-colr"><b>COLOR</b><br><i style="background:'+esc(c.color)+'"></i></div>':'')+'</div>'};
   const A=ms[0],B=ms[1];
-  return h+'<div class="ps-grid">'+side(A,"a")+'<div class="ps-center">'+relbox+'<div class="ps-figs">'+fig(A)+fig(B)+'</div></div>'+side(B,"b")+'</div></section>';
+  return h+'<div class="ps-grid">'+side(A,"a")+'<div class="ps-center">'+relbox+'<div class="ps-figs">'+fig(A)+fig(B)+'</div></div>'+side(B,"b")+'</div>'+(acts?'<div class="ps-foot">'+acts+'</div>':'')+'</section>';
+}
+function pairView(p,big,acts){return !isGroup(p)&&p.style==="poster"?posterHtml(p,big,acts):psheet(p,big,acts)}
+function posterHtml(p,big,acts){
+  const id=p.id,pz=need("pz:"+id,()=>db.collection("pairs/"+id+"/poster")),im=k=>{const d=pz.docs.find(x=>x.id===k);return d?d.data:""};
+  const A=slotChar(p,"a"),B=slotChar(p,"b"),t=(p.pzTitle||"").trim()||pairName(p),href="#pair-"+id;
+  const side=(c,k)=>{const tags=(p[k+"Tags"]||"").split(/[\s,]+/).filter(Boolean).map(x=>x.charAt(0)==="#"?x:"#"+x).join(" "),desc=p[k+"Desc"]||(c.custom?c.look:"")||"",face=im(k+"_face")||c.img,chibi=im(k+"_chibi"),lk=c.custom?href:"#char-"+c.id;
+    const txt='<div class="pz-txt"><h3 class="pz-nm">'+(k==="b"?'<i class="pz-dia"></i>':'')+'<a href="'+lk+'">'+esc(c.name)+'</a>'+(k==="a"?'<i class="pz-dia"></i>':'')+'</h3>'+(tags?'<p class="pz-tags">'+esc(tags)+'</p>':'')+(desc?'<p class="pz-desc">'+br(desc)+'</p>':'')+'</div>';
+    const fc=face?'<div class="pz-face"><img src="'+esc(face)+'" alt="'+esc(c.name)+'" data-zoom="1" loading="lazy"></div>':'';
+    return '<div class="pz-col '+k+'">'+(k==="a"?txt+fc:fc+txt)+(chibi?'<div class="pz-chibi"><img src="'+esc(chibi)+'" alt="" loading="lazy"></div>':'')+'</div>'};
+  const bg=(c,k)=>{const x=im(k+"_bg")||c.img;return x?'<div class="pz-bg '+k+'"><img src="'+esc(x)+'" alt="" loading="lazy"></div>':''};
+  const sw=c=>'<div class="pz-sw">'+[1,.7,.42].map(o=>'<i style="background:'+esc(c.color||"#C9A0B6")+';opacity:'+o+'"></i>').join("")+'</div>';
+  const q=(k,v)=>v?'<span class="pz-q '+k+'">“'+esc(v)+'”</span>':'<span></span>';
+  return '<div class="pz-wrap"><section class="poster'+(big?" big":"")+'">'+bg(A,"a")+bg(B,"b")+'<div class="pz-sws a">'+sw(A)+'</div><div class="pz-sws b">'+sw(B)+'</div>'+(p.pzCredit?'<span class="pz-copy">'+esc(p.pzCredit)+'</span>':'')+
+    '<div class="pz-mid"><div class="pz-head">'+q("a",p.aQuote)+'<div class="pz-tw"><span class="pz-script">'+esc(t)+'</span><a class="pz-title" href="'+href+'">'+esc(t)+'</a></div>'+q("b",p.bQuote)+'</div><div class="pz-rule"></div><div class="pz-cols">'+side(A,"a")+side(B,"b")+'</div></div></section>'+(acts?'<div class="ps-foot">'+acts+'</div>':'')+'</div>';
 }
 function privGal(id,kind,empty){const s=need("pimg:"+id,()=>db.collection("priv").where("work","==",id).limit(150));
   return galHtml({loading:s.loading,docs:s.docs.filter(d=>d.kind===kind).sort((a,b)=>(a.t||0)-(b.t||0))},"priv",empty)}
@@ -938,7 +988,7 @@ function pagePairs(){
   if(!PAIRS.length)return h+'<div class="empty">아직 페어나 단체가 없어요.'+(canWrite?' [편집]을 누르고 [+ 페어 만들기] 또는 [+ 단체 만들기]를 눌러 보세요.':'')+'</div></div>';
   h+='<div class="pslist">'+PAIRS.map(p=>{const kw=kindW(p),i=PAIRS.indexOf(p);
     const inf=editing?pinfo(p.id):null,has=!!(inf&&inf.doc&&inf.doc.data);
-    return psheet(p,false)+'<div class="ps-act" style="margin:-20px 0 26px">'+(editing?imgBtn(has?"관계도 바꾸기":"+ 관계도",'data-pinfo="'+p.id+'"')+'<button class="btn sm fix" data-act="mv-pair" data-i="'+i+'" data-d="-1"'+(i===0?" disabled":"")+' aria-label="앞으로">←</button><button class="btn sm fix" data-act="mv-pair" data-i="'+i+'" data-d="1"'+(i===PAIRS.length-1?" disabled":"")+' aria-label="뒤로">→</button><a class="btn sm" href="#pair-'+p.id+'">편집하기 ›</a>':'<a class="btn sm" href="#pair-'+p.id+'">자세히 ›</a><a class="btn sm primary" href="#request" data-pickpair="'+p.id+'">이 '+kw+'로 신청서 쓰기</a>')+'</div>'}).join("")+'</div>';
+    return pairView(p,false,(editing?imgBtn(has?"관계도 바꾸기":"+ 관계도",'data-pinfo="'+p.id+'"')+'<button class="btn sm fix" data-act="mv-pair" data-i="'+i+'" data-d="-1"'+(i===0?" disabled":"")+' aria-label="앞으로">←</button><button class="btn sm fix" data-act="mv-pair" data-i="'+i+'" data-d="1"'+(i===PAIRS.length-1?" disabled":"")+' aria-label="뒤로">→</button><a class="btn sm" href="#pair-'+p.id+'">편집하기 ›</a>':'<a class="btn sm" href="#pair-'+p.id+'">자세히 ›</a><a class="btn sm primary" href="#request" data-pickpair="'+p.id+'">이 '+kw+'로 신청서 쓰기</a>'))}).join("")+'</div>';
   return h+'</div>';
 }
 function pagePair(id){
@@ -961,10 +1011,16 @@ function pagePair(id){
   if(editing){h+='<div class="pair-top">'+pairPortrait(p)+'<div style="min-width:0">';
     h+='<div class="stack">'+(G?gmEd():'<div class="ed-row">'+slotEd("a","캐릭터 1")+slotEd("b","캐릭터 2")+'</div>')+
       fld(kw+" 이름 (비우면 멤버 이름으로 보여요)",ein(D,"name",p.name,"예: 하람윤슬",{cls:"h1-in"}))+fld("관계 한 줄",ein(D,"rel",p.rel,"예: 소꿉친구 → 연인"))+fld("관계 설명",eta(D,"desc",p.desc,"관계, 호칭, 분위기, 함께 그릴 때 주의할 점 등. 신청서에 같이 들어가요.",5))+
-      '<div class="ed-row" style="gap:6px">'+imgBtn("관계도 사진 올리기",'data-pinfo="'+id+'"')+'</div></div>';
+      '<div class="ed-row" style="gap:6px">'+imgBtn("관계도 사진 올리기",'data-pinfo="'+id+'"')+'</div>'+
+      (G?'':fld("보여 주는 디자인",'<select class="ed" data-doc="'+D+'" data-field="style" aria-label="디자인"><option value="sheet"'+(p.style!=="poster"?" selected":"")+'>설정표 (A · B 정보)</option><option value="poster"'+(p.style==="poster"?" selected":"")+'>포스터 (큰 그림 + 얼굴 + 꼬마)</option></select>')+
+       (p.style==="poster"?(()=>{const pz=need("pz:"+id,()=>db.collection("pairs/"+id+"/poster")),has=k=>pz.docs.some(x=>x.id===k);
+         const ib=(k,lb)=>imgBtn((has(k)?"✓ ":"+ ")+lb,'data-pzimg="'+id+'|'+k+'"')+(has(k)?'<button class="btn sm danger fix" data-act="clear-pz" data-id="'+id+'" data-k="'+k+'">지우기</button>':'');
+         const sl=(k,nm)=>'<div class="stack pz-ed" style="flex:1 1 260px;gap:8px"><b>'+esc(nm)+'</b>'+fld("한마디 (위에 크게)",ein(D,k+"Quote",p[k+"Quote"],"예: 포악한 범죄자"))+fld("해시태그",ein(D,k+"Tags",p[k+"Tags"],"예: 폭력적인 청부업자 냉소적인"))+fld("설명",eta(D,k+"Desc",p[k+"Desc"],"외형, 키, 성격, 관계 등 2~3줄",3))+
+           '<div class="ed-row" style="gap:6px">'+ib(k+"_bg","배경 큰 그림")+ib(k+"_face","얼굴 사진")+ib(k+"_chibi","꼬마(SD) 그림")+'</div><span class="hint">배경 그림을 안 넣으면 대표 사진이 쓰여요. 꼬마 그림은 배경이 투명한 PNG가 예뻐요.</span></div>';
+         return '<div class="ed-row">'+fld("포스터 제목 (비우면 페어 이름)",ein(D,"pzTitle",p.pzTitle,"예: seol x yura"))+fld("작은 글씨 (저작권 등)",ein(D,"pzCredit",p.pzCredit,"예: copyright@ 2026 @noeu1_"))+'</div><div class="ed-row">'+sl("a",slotChar(p,"a").name)+sl("b",slotChar(p,"b").name)+'</div>'})():''))+'</div>';
     h+='</div></div>';
   }else{
-    h+=psheet(p,true)+'<div class="ps-act"><a class="btn primary" href="#request" data-pickpair="'+id+'">이 '+kw+'로 신청서 쓰기</a></div>';
+    h+=pairView(p,true,'<a class="btn primary" href="#request" data-pickpair="'+id+'">이 '+kw+'로 신청서 쓰기</a>');
   }
   const inf=pinfo(id),has=!!(inf.doc&&inf.doc.data);
   h+=secTitle("Relationship","관계도"+(editing&&has?' · <button class="btn sm danger" data-act="clear-pinfo" data-id="'+id+'">관계도 지우기</button>':''))+(has?'<div class="infobig"><img src="'+esc(inf.doc.data)+'" alt="'+esc(pairName(p))+' 관계도" data-zoom="1"></div>':inf.loading?'<div class="loading">불러오는 중…</div>':'<div class="empty">관계도 사진이 아직 없어요.'+(editing?' 위의 [관계도 사진 올리기]로 넣어 주세요.':'')+'</div>');
@@ -1391,6 +1447,9 @@ document.addEventListener("change",e=>{
   if(d.charimg&&t.files&&t.files[0]){const cid=d.charimg;openCrop(t.files[0],{title:"대표 사진 자르기",aspects:[["3:4",3/4],["1:1",1],["원본",0]],max:1000,limit:150000,save:data=>upd("chars/"+cid,{img:data}),ok:"대표 사진을 바꿨어요."});t.value="";return}
   if(d.siteimg&&t.files&&t.files[0]){const k=d.siteimg;if(k==="welcomeImg"||k==="statImg"){openCrop(t.files[0],{title:k==="welcomeImg"?"가운데 사진 자르기":"그림 자르기",aspects:k==="welcomeImg"?[["3:4",3/4],["원본",0]]:[["원본",0],["1:1",1],["4:3",4/3],["3:4",3/4]],max:1000,limit:200000,save:data=>setDoc("site/main",{[k]:data},true),ok:"사진을 넣었어요."});t.value="";return}openCrop(t.files[0],k==="banner"?{title:"배너 사진 자르기",aspects:[["와이드",3.6],["4:1",4],["원본",0]],max:1600,limit:240000,save:data=>setDoc("site/main",{banner:data},true),ok:"배너를 바꿨어요."}:{title:"프로필 사진 자르기",aspects:[["1:1",1]],max:500,limit:70000,save:data=>setDoc("site/main",{avatar:data},true),ok:"프로필 사진을 바꿨어요."});t.value="";return}
   if(d.gmimg&&t.files&&t.files[0]){const [pid,i]=d.gmimg.split("|");openCrop(t.files[0],{title:"멤버 사진 자르기",aspects:[["3:4",3/4],["1:1",1],["원본",0]],max:700,limit:90000,save:data=>gmSet(pid,+i,"img",data),ok:"사진을 넣었어요."});t.value="";return}
+  if(d.pzimg&&t.files&&t.files[0]){const pp=d.pzimg.split("|"),path="pairs/"+pp[0]+"/poster/"+pp[1],f=t.files[0];t.value="";
+    if(/_face$/.test(pp[1]))openCrop(f,{title:"얼굴 사진 자르기",aspects:[["5:6",5/6],["1:1",1],["원본",0]],max:900,limit:170000,save:data=>setDoc(path,{data}),ok:"사진을 넣었어요."});
+    else{const bgk=/_bg$/.test(pp[1]);toast("사진 저장 중…");fileURL(f).then(loadImg).then(img=>setDoc(path,{data:encode(img,bgk?1400:700,bgk?330000:170000)})).then(()=>toast("사진을 넣었어요."),errToast)}return}
   if(d.pslot&&t.files&&t.files[0]){const [pid,k]=d.pslot.split("|");openCrop(t.files[0],{title:"캐릭터 사진 자르기",aspects:[["3:4",3/4],["1:1",1],["원본",0]],max:900,limit:150000,save:data=>upd("pairs/"+pid,{[k+"Img"]:data}),ok:"사진을 넣었어요."});t.value="";return}
   if(d.pinfo&&t.files&&t.files[0]){const pid=d.pinfo;openCrop(t.files[0],{title:"관계도 사진",aspects:[["원본",0],["4:3",4/3],["16:9",16/9],["1:1",1],["3:4",3/4]],max:1800,limit:450000,save:data=>setDoc("pairs/"+pid+"/info/main",{data,t:Date.now()}),ok:"관계도를 저장했어요."});t.value="";return}
   if(d.prefs&&t.files&&t.files.length){addImages(t.files,"pairs/"+d.prefs+"/refs");return}
@@ -1436,7 +1495,7 @@ document.addEventListener("click",e=>{
     case "arm":{const k=b.dataset.key;if(armed!==k){armed=k;render(true);break}armed=null;
       const m=k.match(/^(char|work|artist|req|pair)-(.+)$/),path=m[1]+"s/"+m[2];
       const sub=(m[1]==="char"||m[1]==="pair")?path+"/refs":(m[1]==="work"||m[1]==="req")?path+"/imgs":null;
-      (sub?delCollection(sub):Promise.resolve()).then(()=>m[1]==="req"?delCollection(path+"/poses"):null).then(()=>m[1]==="work"?delDoc("priv/"+m[2]):(m[1]==="char"||m[1]==="pair")?delDoc(path+"/info/main"):null).then(()=>delDoc(path)).then(()=>toast("삭제했어요."),errToast);
+      (sub?delCollection(sub):Promise.resolve()).then(()=>m[1]==="req"?delCollection(path+"/poses"):m[1]==="pair"?delCollection(path+"/poster"):null).then(()=>m[1]==="work"?delDoc("priv/"+m[2]):(m[1]==="char"||m[1]==="pair")?delDoc(path+"/info/main"):null).then(()=>delDoc(path)).then(()=>toast("삭제했어요."),errToast);
       location.hash=m[1]+"s";break}
     case "bulk-add":{const ta=$("#bulk-names"),names=(ta&&ta.value||"").split("\n").map(x=>x.trim()).filter(Boolean);
       if(!names.length){toast("이름을 한 줄에 하나씩 적어 주세요.");break}
@@ -1446,6 +1505,7 @@ document.addEventListener("click",e=>{
       let oa=+A.order||i,ob=+B.order||j;if(oa===ob)ob=oa+(+b.dataset.d);upd("chars/"+A.id,{order:ob});upd("chars/"+B.id,{order:oa});break}
     case "clear-charimg":upd("chars/"+b.dataset.id,{img:""});break;
     case "clear-siteimg":setDoc("site/main",{[b.dataset.k]:""},true);break;
+    case "clear-pz":delDoc("pairs/"+b.dataset.id+"/poster/"+b.dataset.k);break;
     case "clear-pslot":upd("pairs/"+b.dataset.id,{[b.dataset.k+"Img"]:""});break;
     case "clear-pinfo":delDoc("pairs/"+b.dataset.id+"/info/main").then(()=>toast("관계도를 지웠어요."));break;
     case "add-pair":{const a=b.dataset.a||"",others=CHARS.filter(c=>c.id!==a),id=uid();
