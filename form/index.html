@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Noeul · Request</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pinyon+Script&family=Gowun+Batang:wght@400;700&display=swap">
+<style>
+:root{--paper:#FCF7F9;--paper2:#F6EAF0;--card:#FFFDFE;--ink:#5B3A4C;--muted:#9C7F8E;--line:#E9D3DE;--accent:#9A5677;--deep:#6E3653;--pink:#E7A9C2;
+  --f-d:"Cormorant Garamond","Gowun Batang",serif;--f-s:"Pinyon Script","Gowun Batang",cursive;--f-b:"Gowun Batang",serif}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-b);font-size:15.5px;line-height:1.75;-webkit-text-size-adjust:100%}
+a{color:var(--accent)}
+button,input,textarea{font:inherit;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 80px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 0;border-bottom:1px solid var(--line);margin-bottom:34px;flex-wrap:wrap}
+.brand{font-family:var(--f-s);font-size:30px;color:var(--deep);text-decoration:none;line-height:1}
+.bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:5px 15px;font-size:13.5px;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--paper2)}
+.btn.pri{background:var(--deep);border-color:var(--deep);color:#fff}
+.btn.pri:hover{background:var(--accent)}
+.btn.sm{padding:3px 11px;font-size:12.5px}
+.btn.danger{border-color:#C9738E;color:#B0476A}
+.btn[disabled]{opacity:.4;cursor:default}
+.muted{color:var(--muted)}
+.center{text-align:center}
+.land{text-align:center;padding:70px 0 40px}
+.land h1{font-family:var(--f-s);font-weight:400;font-size:64px;color:var(--deep);margin:0;line-height:1.1}
+.land p{margin:14px 0 0;color:var(--muted)}
+.land .small{margin-top:46px;font-size:12.5px}
+.pg-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.pg-h h2{font-family:var(--f-d);font-weight:600;font-size:34px;margin:0;color:var(--deep);line-height:1}
+.list{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:4px;flex-wrap:wrap}
+.row .tt{flex:1 1 220px;min-width:0}
+.row .tt a{font-weight:700;color:var(--ink);text-decoration:none;font-size:16px;overflow-wrap:anywhere}
+.row .tt span{display:block;font-size:12.5px;color:var(--muted)}
+.empty{padding:40px 16px;text-align:center;border:1px dashed var(--line);color:var(--muted);font-style:italic;border-radius:4px}
+.letter{background:var(--card);border:1px solid var(--line);box-shadow:inset 0 0 0 6px var(--card),inset 0 0 0 7px var(--line);padding:48px clamp(18px,6vw,64px) 54px;border-radius:2px}
+.lt-kick{display:block;text-align:center;font-family:var(--f-s);font-size:30px;color:var(--pink);line-height:1}
+.lt-title{text-align:center;font-family:var(--f-d);font-weight:600;font-size:clamp(28px,5vw,40px);color:var(--deep);margin:8px 0 6px;line-height:1.2;overflow-wrap:anywhere}
+.lt-meta{text-align:center;color:var(--muted);font-size:13.5px}
+.lt-rule{display:flex;align-items:center;justify-content:center;gap:12px;margin:22px 0 30px;color:var(--pink)}
+.lt-rule::before,.lt-rule::after{content:"";height:1px;width:80px;background:var(--line)}
+.blk-t{white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 22px}
+.blk-i{margin:0 0 26px}
+.blk-i img{display:block;max-width:100%;max-height:80vh;margin:0 auto;cursor:zoom-in;border-radius:2px}
+.blk-i figcaption{text-align:center;font-size:13px;color:var(--muted);margin-top:8px}
+.lt-from{text-align:right;font-family:var(--f-d);font-style:italic;font-size:18px;color:var(--deep);margin-top:34px}
+.lt-note{margin-top:26px;text-align:center;font-size:12px;color:var(--muted)}
+.ed-top{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.ed-top .full{grid-column:1/-1}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fld span{font-size:12.5px;font-weight:700;color:var(--accent)}
+.in{width:100%;border:1px solid var(--line);background:#fff;border-radius:3px;padding:9px 11px;font-size:15px}
+.in:focus{outline:2px solid var(--pink);outline-offset:0;border-color:var(--pink)}
+textarea.in{resize:vertical;min-height:120px;line-height:1.7}
+.eblk{border:1px dashed var(--line);border-radius:4px;padding:10px;margin-bottom:12px;background:#fff}
+.eblk-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:6px}
+.eblk-h b{font-size:12px;letter-spacing:.08em;color:var(--muted)}
+.eblk img{display:block;max-width:100%;max-height:340px;margin:0 auto 8px}
+.adds{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0 6px}
+.file{position:relative;overflow:hidden}
+.file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.save{font-size:12px;color:var(--muted)}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(40,20,32,.88);display:grid;place-items:center;padding:24px;cursor:zoom-out}
+.lb img{max-width:calc(100vw - 48px);max-height:calc(100vh - 48px);object-fit:contain;border-radius:4px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--deep);color:#fff;padding:9px 18px;border-radius:999px;font-size:13.5px;z-index:60;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+@media (max-width:560px){.ed-top{grid-template-columns:1fr}.land h1{font-size:50px}}
+</style>
+</head>
+<body>
+<div id="app" class="wrap"><p class="center muted" style="padding-top:80px">불러오는 중…</p></div>
+<script type="module">
+const FIREBASE_CONFIG={apiKey:"AIzaSyA4lU_G0VWEu4dqQboqv-Y0DbSl5gLud1Y",authDomain:"commission-box-510ce.firebaseapp.com",projectId:"commission-box-510ce",storageBucket:"commission-box-510ce.firebasestorage.app",messagingSenderId:"176918333352",appId:"1:176918333352:web:323a3cac3c9f8709ad3f9d"};
+const OWNER_EMAIL="guwon632@gmail.com";
+const V="10.12.2";
+let F,db,auth,me=null,owner=false,ready=false;
+let route={v:"home"},editing=false,lb=null;
+let LIST=null,listUnsub=null;
+let cur={id:null,doc:undefined,imgs:{},err:null,unsubs:[]},draft=null,dirty=false,saveT=null,saving="";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const rid=n=>{const a="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789",b=crypto.getRandomValues(new Uint8Array(n));return [...b].map(x=>a[x%a.length]).join("")};
+const today=()=>{const d=new Date();return d.getFullYear()+"."+String(d.getMonth()+1).padStart(2,"0")+"."+String(d.getDate()).padStart(2,"0")};
+const linkOf=id=>location.origin+location.pathname+"#/l/"+id;
+function toast(m){const o=$(".toast");if(o)o.remove();const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
+function copy(s){(navigator.clipboard?navigator.clipboard.writeText(s):Promise.reject()).catch(()=>{const t=document.createElement("textarea");t.value=s;document.body.appendChild(t);t.select();try{document.execCommand("copy")}catch(e){}t.remove()}).finally(()=>toast("링크를 복사했어요."))}
+function parse(){const h=location.hash.replace(/^#\/?/,"");const m=h.match(/^l\/([A-Za-z0-9]{8,40})/);return m?{v:"letter",id:m[1]}:{v:"home"}}
+const loadImg=src=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src});
+const fileURL=f=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f)});
+function encode(img,max,limit){let sc=Math.min(1,max/Math.max(img.width,img.height)),q=.86,out="";
+  for(let n=0;n<12;n++){const w=Math.max(1,Math.round(img.width*sc)),h=Math.max(1,Math.round(img.height*sc)),cv=document.createElement("canvas");cv.width=w;cv.height=h;
+    const x=cv.getContext("2d");x.drawImage(img,0,0,w,h);out=cv.toDataURL("image/webp",q);
+    if(out.indexOf("data:image/webp")!==0){x.globalCompositeOperation="destination-over";x.fillStyle="#fff";x.fillRect(0,0,w,h);out=cv.toDataURL("image/jpeg",q)}
+    if(out.length<=limit)return out;if(q>.56)q-=.1;else sc*=.82}return out}
+
+/* ---------- data ---------- */
+function watchList(){if(listUnsub||!owner)return;LIST=null;
+  listUnsub=F.onSnapshot(F.query(F.collection(db,"letters"),F.orderBy("t","desc"),F.limit(300)),s=>{LIST=s.docs.map(d=>Object.assign({id:d.id},d.data()));if(route.v==="home")render()},e=>{console.warn(e);LIST=[];render()})}
+function stopList(){if(listUnsub){listUnsub();listUnsub=null}LIST=null}
+function openLetter(id){if(cur.id===id)return;closeLetter();cur={id,doc:undefined,imgs:{},err:null,unsubs:[]};
+  cur.unsubs.push(F.onSnapshot(F.doc(db,"letters/"+id),s=>{cur.doc=s.exists()?Object.assign({id},s.data()):null;if(!editing||!draft)render()},e=>{console.warn(e);cur.doc=null;cur.err=e.code;render()}));
+  cur.unsubs.push(F.onSnapshot(F.query(F.collection(db,"letters/"+id+"/imgs"),F.limit(400)),s=>{const m={};s.docs.forEach(d=>m[d.id]=d.data().data);cur.imgs=m;if(editing)renderKeep();else render()},e=>console.warn(e)))}
+function closeLetter(){flush();cur.unsubs.forEach(u=>{try{u()}catch(e){}});cur={id:null,doc:undefined,imgs:{},err:null,unsubs:[]};draft=null}
+function schedSave(){dirty=true;saving="저장 대기…";setSave();clearTimeout(saveT);saveT=setTimeout(flush,800)}
+function flush(){clearTimeout(saveT);if(!dirty||!draft||!cur.id)return;dirty=false;const id=cur.id,d=draft;saving="저장 중…";setSave();
+  F.updateDoc(F.doc(db,"letters/"+id),{title:d.title,to:d.to,from:d.from,blocks:d.blocks,u:Date.now()}).then(()=>{saving="저장됨";setSave()},e=>{console.warn(e);saving="저장 실패";setSave();toast("저장하지 못했어요.")})}
+function setSave(){const s=$("#save");if(s)s.textContent=saving}
+async function newLetter(){const id=rid(22);
+  await F.setDoc(F.doc(db,"letters/"+id),{title:"",to:"",from:"노을",date:today(),blocks:[{k:"t",text:""}],t:Date.now(),u:Date.now()});
+  editing=true;location.hash="#/l/"+id}
+async function delLetter(id){try{const s=await F.getDocs(F.collection(db,"letters/"+id+"/imgs"));for(const d of s.docs)await F.deleteDoc(F.doc(db,"letters/"+id+"/imgs/"+d.id));await F.deleteDoc(F.doc(db,"letters/"+id));toast("삭제했어요.")}catch(e){console.warn(e);toast("삭제하지 못했어요.")}}
+async function addImgs(files){const list=[...files];toast("그림 "+list.length+"장 저장 중…");let n=0;
+  for(const f of list){try{const img=await loadImg(await fileURL(f));const data=encode(img,1800,330000),iid=rid(12);
+      await F.setDoc(F.doc(db,"letters/"+cur.id+"/imgs/"+iid),{data,t:Date.now()});cur.imgs[iid]=data;draft.blocks.push({k:"i",img:iid,cap:""});n++}catch(e){console.warn(e)}}
+  schedSave();renderKeep();toast(n===list.length?"그림 "+n+"장을 넣었어요.":"그림 "+n+"/"+list.length+"장만 넣었어요.")}
+
+/* ---------- views ---------- */
+function topBar(){let r='<header class="top"><a class="brand" href="#/">Noeul</a><div class="bar">';
+  if(owner){if(route.v==="letter"&&cur.doc){r+='<a class="btn sm" href="#/">목록</a><button class="btn sm" data-a="copy">링크 복사</button><button class="btn sm '+(editing?'pri':'')+'" data-a="edit">'+(editing?'미리보기':'편집')+'</button>'}
+    r+='<button class="btn sm" data-a="logout" title="'+esc(me&&me.email)+'">로그아웃</button>'}
+  else if(me)r+='<button class="btn sm" data-a="logout">로그아웃</button>';
+  return r+'</div></header>'}
+function home(){if(!owner)return '<div class="land"><h1>Request</h1><p>링크를 받은 분만 신청서를 볼 수 있어요.</p>'+(me?'<p class="small muted">이 계정은 관리자 계정이 아니에요.</p>':'<p class="small"><button class="btn sm" data-a="login">관리자 로그인</button></p>')+'</div>';
+  let h='<div class="pg-h"><h2>Requests</h2><button class="btn pri" data-a="new">+ 새 신청서</button></div><p class="muted" style="margin:-6px 0 18px;font-size:13px">여기 목록은 나만 보여요. 작가님께는 각 신청서의 링크만 보내면 돼요.</p>';
+  if(!LIST)return h+'<p class="center muted">불러오는 중…</p>';
+  if(!LIST.length)return h+'<div class="empty">아직 만든 신청서가 없어요. [+ 새 신청서]를 눌러 보세요.</div>';
+  return h+'<div class="list">'+LIST.map(l=>'<div class="row"><div class="tt"><a href="#/l/'+l.id+'">'+esc(l.title||"제목 없음")+'</a><span>'+(l.to?'To. '+esc(l.to)+' · ':'')+esc(l.date||"")+'</span></div><button class="btn sm" data-a="copy" data-id="'+l.id+'">링크 복사</button><a class="btn sm" href="#/l/'+l.id+'">열기</a><button class="btn sm danger" data-a="del" data-id="'+l.id+'">삭제</button></div>').join("")+'</div>'}
+function blocksView(d){return (d.blocks||[]).map(b=>{if(b.k==="i"){const s=cur.imgs[b.img];return s?'<figure class="blk-i"><img src="'+esc(s)+'" alt="'+esc(b.cap||"")+'" data-zoom>'+(b.cap?'<figcaption>'+esc(b.cap)+'</figcaption>':'')+'</figure>':''}
+  return (b.text||"").trim()?'<p class="blk-t">'+esc(b.text)+'</p>':''}).join("")}
+function letterView(d){return '<article class="letter"><span class="lt-kick">Commission Request</span><h1 class="lt-title">'+esc(d.title||"신청서")+'</h1><div class="lt-meta">'+(d.to?'To. '+esc(d.to)+' &nbsp;·&nbsp; ':'')+esc(d.date||"")+'</div><div class="lt-rule">♡</div>'+
+  blocksView(d)+(d.from?'<div class="lt-from">From. '+esc(d.from)+'</div>':'')+'</article><p class="lt-note">이 페이지는 링크를 받은 분만 볼 수 있어요. 링크를 다른 곳에 공유하지 말아 주세요.</p>'}
+function editor(){const d=draft;let h='<div class="pg-h"><h2>신청서 편집</h2><span id="save" class="save">'+esc(saving)+'</span></div><div class="ed-top">'+
+  '<label class="fld full"><span>제목</span><input class="in" data-f="title" value="'+esc(d.title)+'" placeholder="예: 시아 전신 커미션 신청서"></label>'+
+  '<label class="fld"><span>받는 분 (To.)</span><input class="in" data-f="to" value="'+esc(d.to)+'" placeholder="예: OO 작가님"></label>'+
+  '<label class="fld"><span>보내는 사람 (From.)</span><input class="in" data-f="from" value="'+esc(d.from)+'" placeholder="노을"></label></div>';
+  const n=d.blocks.length;
+  h+=d.blocks.map((b,i)=>'<div class="eblk"><div class="eblk-h"><b>'+(b.k==="i"?"그림":"글")+'</b><span class="bar"><button class="btn sm" data-a="up" data-i="'+i+'"'+(i===0?" disabled":"")+' aria-label="위로">↑</button><button class="btn sm" data-a="down" data-i="'+i+'"'+(i===n-1?" disabled":"")+' aria-label="아래로">↓</button><button class="btn sm danger" data-a="rm" data-i="'+i+'">빼기</button></span></div>'+
+    (b.k==="i"?(cur.imgs[b.img]?'<img src="'+esc(cur.imgs[b.img])+'" alt="">':'<p class="center muted">그림 불러오는 중…</p>')+'<input class="in" data-cap="'+i+'" value="'+esc(b.cap||"")+'" placeholder="그림 설명 (선택)">':
+     '<textarea class="in" data-txt="'+i+'" rows="6" placeholder="내용을 자유롭게 적어 주세요">'+esc(b.text||"")+'</textarea>')+'</div>').join("");
+  h+='<div class="adds"><button class="btn" data-a="addt">+ 글</button><label class="btn file">+ 그림 (여러 장)<input type="file" id="imgs" accept="image/*" multiple></label></div><p class="center muted" style="font-size:12.5px">입력하는 대로 자동 저장돼요. 위의 [미리보기]로 작가님께 보이는 모습을 볼 수 있어요.</p>';
+  return h}
+function letter(){if(cur.doc===undefined)return '<p class="center muted">불러오는 중…</p>';
+  if(!cur.doc)return '<div class="land"><h1>Oops</h1><p>찾을 수 없는 신청서예요. 링크를 다시 확인해 주세요.</p></div>';
+  if(owner&&editing){if(!draft)draft={title:cur.doc.title||"",to:cur.doc.to||"",from:cur.doc.from||"",blocks:JSON.parse(JSON.stringify(cur.doc.blocks||[]))};return editor()}
+  return letterView(cur.doc)}
+function render(){if(!ready)return;route=parse();
+  if(route.v==="letter")openLetter(route.id);else{if(cur.id)closeLetter();editing=false}
+  if(owner)watchList();
+  const body=route.v==="letter"?letter():home();
+  $("#app").innerHTML=topBar()+body+(lb?'<div class="lb" data-a="lbx"><img src="'+esc(lb)+'" alt=""></div>':'');
+  document.title=route.v==="letter"&&cur.doc?(cur.doc.title||"신청서")+" · Noeul":"Noeul · Request"}
+function renderKeep(){const y=scrollY;render();scrollTo(0,y)}
+
+/* ---------- events ---------- */
+document.addEventListener("click",e=>{const z=e.target.closest("[data-zoom]");if(z&&!editing){lb=z.getAttribute("src");render();return}
+  const b=e.target.closest("[data-a]");if(!b)return;const a=b.dataset.a,i=+b.dataset.i;
+  switch(a){
+    case "login":F.signInWithPopup(auth,new F.GoogleAuthProvider()).catch(err=>{console.warn(err);toast(String(err&&err.code||"").includes("unauthorized-domain")?"이 주소가 Firebase에 등록되지 않았어요.":"로그인하지 못했어요.")});break;
+    case "logout":flush();F.signOut(auth);break;
+    case "new":newLetter().catch(e=>{console.warn(e);toast("만들지 못했어요.")});break;
+    case "copy":copy(linkOf(b.dataset.id||cur.id));break;
+    case "del":if(b.dataset.sure){delLetter(b.dataset.id)}else{b.dataset.sure="1";b.textContent="정말 삭제?";setTimeout(()=>{if(b.isConnected){delete b.dataset.sure;b.textContent="삭제"}},3000)}break;
+    case "edit":if(editing){flush();editing=false;draft=null}else editing=true;render();scrollTo(0,0);break;
+    case "addt":draft.blocks.push({k:"t",text:""});schedSave();renderKeep();const ts=document.querySelectorAll("[data-txt]");if(ts.length)ts[ts.length-1].focus();break;
+    case "up":case "down":{const j=a==="up"?i-1:i+1;if(j<0||j>=draft.blocks.length)break;const t=draft.blocks[i];draft.blocks[i]=draft.blocks[j];draft.blocks[j]=t;schedSave();renderKeep();break}
+    case "rm":{if(!b.dataset.sure){b.dataset.sure="1";b.textContent="정말?";setTimeout(()=>{if(b.isConnected){delete b.dataset.sure;b.textContent="빼기"}},3000);break}
+      const x=draft.blocks.splice(i,1)[0];if(x&&x.k==="i"){F.deleteDoc(F.doc(db,"letters/"+cur.id+"/imgs/"+x.img)).catch(()=>{});delete cur.imgs[x.img]}schedSave();renderKeep();break}
+    case "lbx":lb=null;render();break}});
+document.addEventListener("input",e=>{const t=e.target;if(!draft)return;
+  if(t.dataset.f){draft[t.dataset.f]=t.value;schedSave()}
+  else if(t.dataset.txt!=null){draft.blocks[+t.dataset.txt].text=t.value;schedSave()}
+  else if(t.dataset.cap!=null){draft.blocks[+t.dataset.cap].cap=t.value;schedSave()}});
+document.addEventListener("change",e=>{if(e.target.id==="imgs"&&e.target.files.length&&draft){addImgs(e.target.files);e.target.value=""}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&lb){lb=null;render()}});
+window.addEventListener("hashchange",()=>{lb=null;render();scrollTo(0,0)});
+window.addEventListener("beforeunload",()=>flush());
+
+/* ---------- boot ---------- */
+(async()=>{try{const base="https://www.gstatic.com/firebasejs/"+V+"/";
+  const [app,fs,au]=await Promise.all([import(base+"firebase-app.js"),import(base+"firebase-firestore.js"),import(base+"firebase-auth.js")]);
+  F=Object.assign({},fs,au);const fapp=app.initializeApp(FIREBASE_CONFIG);db=fs.getFirestore(fapp);auth=au.getAuth(fapp);ready=true;
+  au.onAuthStateChanged(auth,u=>{me=u;const was=owner;owner=!!(u&&u.email&&u.email.toLowerCase()===OWNER_EMAIL);if(!owner){stopList();editing=false;draft=null}
+    if(was!==owner&&cur.id){const id=cur.id;closeLetter()}render()});
+  render()}catch(e){console.error(e);$("#app").innerHTML='<p class="center muted" style="padding-top:80px">페이지를 불러오지 못했어요. 새로고침해 주세요.</p>'}})();
+</script>
+</body>
+</html>
